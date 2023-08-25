@@ -3,14 +3,9 @@ import nltk
 from nltk.corpus import stopwords
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
-from io import BytesIO
 from gensim.models import LdaModel
 from gensim.corpora import Dictionary
 import streamlit as st
-import ipywidgets as widgets
-from IPython.display import display, clear_output
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import math
 
 
