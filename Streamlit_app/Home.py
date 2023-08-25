@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import nltk
 from nltk.corpus import stopwords
@@ -57,6 +58,8 @@ def generate_wordcloud(top_words_text):
 @st.cache_data
 # Function to load and preprocess the data
 def load_and_preprocess_data(file_path):
+    script_directory = os.path.dirname(os.path.abspath(__file__))
+    file_path = os.path.join(script_directory, file_path)
     df = pd.read_csv(file_path)
     #df = df.head(1000)
     df['Corpus'] = df['Title'] + ' ' + df['Abstract'] + ' ' + df['Category']
