@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import nltk
+nltk.download('punkt')
 from nltk.corpus import stopwords
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
