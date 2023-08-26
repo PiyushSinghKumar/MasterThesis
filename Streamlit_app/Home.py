@@ -10,6 +10,7 @@ from gensim.models import LdaModel
 from gensim.corpora import Dictionary
 import streamlit as st
 import math
+import re
 
 
 st.markdown("""
@@ -100,16 +101,33 @@ def main_page():
     # Search bar and button
     search_query = st.text_input('Enter your search query:', placeholder='Type PMID / PMCID / Title')
     search_button = st.button('Search')
+
     st.write("---")
     if search_button:
         if search_query.strip() == "":
             st.warning("Please enter query")
         else:
             if search_button:
+                # Split the search query into individual words
+                words = search_query.split('+')
+                
+                # Create a regular expression pattern to match any of the words
+                pattern = re.compile(r'\b(?:' + '|'.join(re.escape(word.strip()) for word in words) + r')\b', flags=re.IGNORECASE)
+
+                # Define a lambda function to perform the matching
+                pmid_match = df['PMID'].astype(str).apply(lambda x: bool(pattern.search(x)))
+                pmcid_match = df['PMCID'].astype(str).apply(lambda x: bool(pattern.search(x)))
+                title_match = df['Title'].apply(lambda x: bool(pattern.search(x)))
+
+                # Convert non-string 'Abstract' values to strings
+                df['Abstract'] = df['Abstract'].apply(lambda x: str(x))
+                abstract_match = df['Abstract'].apply(lambda x: bool(pattern.search(x)))
                 # Filter data based on the search query
-                filtered_df = df[(df['PMCID'] == search_query) | 
-                                (df['PMID'] == search_query) | 
-                                df['Title'].str.contains(search_query, case=False)]
+                filtered_df = df[pmid_match | 
+                                pmcid_match | 
+                                title_match |
+                                abstract_match
+                                ]
 
                 # Drop duplicates based on the columns you need
                 columns_to_check_duplicates = ['PMCID', 'PMID', 'Title', 'Abstract', 'Article URL']
@@ -127,6 +145,9 @@ def main_page():
 
 def display_filtered_data(category:str):
     df = load_and_preprocess_data("ensemble_results.csv")
+
+    # Convert non-string 'Abstract' values to strings
+    df['Abstract'] = df['Abstract'].apply(lambda x: str(x))
     # Filter data based on the search query
     filtered_df = df[(df['Category'] == category) & (df['multi_labels'] == category)]
     filtered_df = filtered_df.groupby(['PMCID', 'PMID', 'Title', 'Abstract', 'Article URL']).agg({
@@ -151,14 +172,26 @@ def display_filtered_data(category:str):
     # Apply the search query filtering if applicable
     if search_button and search_query:
         st.session_state.applied_search_query = search_query
-        # filtered_df = filtered_df[(filtered_df['PMCID'] == search_query) | 
-        #                             (filtered_df['PMID'] == search_query) | 
-        #                             filtered_df['Title'].str.contains(search_query, case=False)]
-    # Apply the stored search query again
+
+    # Apply the stored search query
     if hasattr(st.session_state, 'applied_search_query') and st.session_state.applied_search_query:
-        filtered_df = filtered_df[(df['PMID'] == st.session_state.applied_search_query) |
-                (df['PMCID'] == st.session_state.applied_search_query) |
-                df['Title'].str.contains(st.session_state.applied_search_query, case=False)
+        search_query = st.session_state.applied_search_query
+        # Split the search query into individual words
+        words = search_query.split('+')
+        
+        # Create a regular expression pattern to match any of the words
+        pattern = re.compile(r'\b(?:' + '|'.join(re.escape(word.strip()) for word in words) + r')\b', flags=re.IGNORECASE)
+
+        # Define a lambda function to perform the matching
+        pmid_match = filtered_df['PMID'].astype(str).apply(lambda x: bool(pattern.search(x)))
+        pmcid_match = filtered_df['PMCID'].astype(str).apply(lambda x: bool(pattern.search(x)))
+        title_match = filtered_df['Title'].apply(lambda x: bool(pattern.search(x)))
+        abstract_match = filtered_df['Abstract'].apply(lambda x: bool(pattern.search(x)))
+
+        filtered_df = filtered_df[pmid_match |
+                pmcid_match |
+                title_match |
+                abstract_match
             ]
         
         if filtered_df.empty:
