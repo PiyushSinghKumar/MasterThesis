@@ -137,10 +137,10 @@ def main_page():
                 st.dataframe(filtered_df[['PMCID','PMID','Title','Abstract','Article URL']],use_container_width = True,hide_index = True)
 
                 # Clear the word cloud placeholder to remove it from the output
-                # st.empty()            
+                st.empty()            
 
     # Only generate the word cloud if the search button is not clicked
-    if not search_button or search_query:
+    if not (search_button and search_query):
         generate_wordcloud(top_words_text)
 
 def display_filtered_data(category:str):
