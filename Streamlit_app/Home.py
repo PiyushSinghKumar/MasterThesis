@@ -103,11 +103,11 @@ def main_page():
     search_button = st.button('Search')
 
     st.write("---")
-    if search_button:
+    if search_button or search_query:
         if search_query.strip() == "":
             st.warning("Please enter query")
         else:
-            if search_button:
+            if search_button or search_query:
                 # Split the search query into individual words
                 words = search_query.split('+')
                 
@@ -140,7 +140,7 @@ def main_page():
                 # st.empty()            
 
     # Only generate the word cloud if the search button is not clicked
-    if not search_button:
+    if not search_button or search_query:
         generate_wordcloud(top_words_text)
 
 def display_filtered_data(category:str):
@@ -170,7 +170,7 @@ def display_filtered_data(category:str):
             del st.session_state.applied_search_query
 
     # Apply the search query filtering if applicable
-    if search_button and search_query:
+    if search_button or search_query:
         st.session_state.applied_search_query = search_query
 
     # Apply the stored search query
@@ -212,6 +212,7 @@ def display_filtered_data(category:str):
     if 'num_displayed_papers' not in st.session_state:
         st.session_state.num_displayed_papers = num_initial_papers
 
+    
     # Create a container to hold the card layout
     container = st.container()
 
