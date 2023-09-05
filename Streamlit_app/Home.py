@@ -66,7 +66,7 @@ def preprocess_text(text):
 # Function to generate the word cloud
 def generate_wordcloud(top_words_text):
     wordcloud = WordCloud(width=800, height=400, background_color='black').generate(top_words_text)
-    plt.figure(figsize=(10, 5))
+    #plt.figure(figsize=(10, 5))
     plt.imshow(wordcloud, interpolation='bilinear')
     #plt.title('Word Cloud')
     plt.axis("off")
