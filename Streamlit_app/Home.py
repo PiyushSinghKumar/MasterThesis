@@ -154,7 +154,7 @@ def main_page():
                 st.empty()            
 
     # Only generate the word cloud if the search button is not clicked
-    if not (search_button and search_query):
+    if not (search_button or search_query):
         generate_wordcloud(top_words_text)
 
 def display_filtered_data(category:str):
