@@ -4,6 +4,7 @@ import nltk
 nltk.download('punkt')
 nltk.download('stopwords')
 from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 from gensim.models import LdaModel
@@ -41,6 +42,17 @@ def preprocess_text(text):
         words = nltk.word_tokenize(text)
         # Remove punctuation and non-alphabetic characters
         words = [word for word in words if word.isalpha()]
+
+        # Remove special characters
+        words = [re.sub(r'[^A-Za-z0-9\s]', '', word) for word in words]
+        
+        # Remove numbers
+        words = [word for word in words if not word.isdigit()]
+
+        # Lemmatization
+        lemmatizer = WordNetLemmatizer()
+        words = [lemmatizer.lemmatize(word) for word in words]
+
         # Remove stopwords
         stop_words = set(stopwords.words('english'))
         words = [word for word in words if word not in stop_words]
@@ -51,7 +63,7 @@ def preprocess_text(text):
 
 # Function to generate the word cloud
 def generate_wordcloud(top_words_text):
-    wordcloud = WordCloud(width=800, height=400, background_color='white').generate(top_words_text)
+    wordcloud = WordCloud(width=800, height=400, background_color='black').generate(top_words_text)
     plt.figure(figsize=(10, 5))
     plt.imshow(wordcloud, interpolation='bilinear')
     #plt.title('Word Cloud')
@@ -91,8 +103,8 @@ def main_page():
     # Merge the top words from each topic into a single text
     top_words_text = ''
     for topic_num in range(num_topics):
-        topic_words = lda_model.show_topic(topic_num, topn=2)
-        top_words = [word for word, _ in topic_words]
+        topic_words = lda_model.show_topic(topic_num, topn=4)
+        top_words = [word for word, _ in topic_words if len(word) > 3]
         top_words_text += ' '.join(top_words) + ' '
 
     # Create Streamlit app
