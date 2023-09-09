@@ -101,7 +101,7 @@ def main_page():
     # Merge the top words from each topic into a single text
     top_words_text = ''
     for topic_num in range(num_topics):
-        topic_words = lda_model.show_topic(topic_num, topn=4)
+        topic_words = lda_model.show_topic(topic_num, topn=10)
         top_words = [word for word, _ in topic_words if len(word) > 3 and not word.endswith("ing")]
         top_words_text += ' '.join(top_words) + ' '
 
