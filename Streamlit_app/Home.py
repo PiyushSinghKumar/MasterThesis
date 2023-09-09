@@ -15,13 +15,9 @@ import streamlit as st
 import math
 import re
 
-
 st.markdown("""
 <style>
-            .css-zq5wmm.ezrtsby0
-            {
-            visibility:hidden;
-            }
+            
             .css-cio0dv.ea3mdgi1
             {
             visibility:hidden;
@@ -345,6 +341,27 @@ def page8():
     display_filtered_data("X-ray")
     pass
 
+def page9():
+    st.title('IBiDAV')
+    st.write("""
+            Welcome to IBiDAV : Integrative Biomedical Data Analysis and Visualization.
+             
+             An ongoing master thesis project designed to revolutionize the way we explore and analyze biomedical data. 
+            IBiDAV is a dynamic platform that seamlessly integrates cutting-edge image classification and natural language processing. 
+             
+            Dive into a vast repository of medical images and scholarly literature, categorize papers, uncover hidden themes, and conduct intricate searches. 
+            Our intuitive interface serves as a bridge between image and text analysis, providing a comprehensive understanding of the biomedical domain.
+             
+            Join us on this transformative journey through the intricate landscape of biomedical research. 
+            Let IBiDAV empower you to discover, learn, and innovate in the world of healthcare and life sciences.             
+             """)
+    st.write("""
+    Developed by - Piyush Kumar Singh
+
+    Guided by - Prof. Soldatos, Theodoros
+    """)
+    pass
+
 page_names_to_funcs = {
     "Home": main_page,
     "Computed Tomography (CT) Scan": page2,
@@ -353,7 +370,8 @@ page_names_to_funcs = {
     "Magnetic Resonance Imaging (MRI)": page5,
     "Positron Emission Tomography (PET) Scan": page6,
     "Ultrasound": page7,
-    "X-ray": page8
+    "X-ray": page8,
+    "About": page9
 }
 
 selected_page = "Home"
