@@ -17,7 +17,10 @@ import re
 
 st.markdown("""
 <style>
-            
+            .css-zq5wmm.ezrtsby0
+            {
+            visibility:hidden;
+            }
             .css-cio0dv.ea3mdgi1
             {
             visibility:hidden;
@@ -102,7 +105,7 @@ def main_page():
     top_words_text = ''
     for topic_num in range(num_topics):
         topic_words = lda_model.show_topic(topic_num, topn=10)
-        top_words = [word for word, _ in topic_words if len(word) > 3 and not word.endswith("ing")]
+        top_words = [word for word, _ in topic_words if len(word) > 3 and not word.endswith("ing") and not word.endswith("image")]
         top_words_text += ' '.join(top_words) + ' '
 
     # Create Streamlit app
