@@ -110,7 +110,7 @@ def main_page():
         top_words_text += ' '.join(top_words) + ' '
 
     # Create Streamlit app
-    st.title('Title')          
+    st.title('IBiDAV')          
 
     # Search bar and button
     search_query = st.text_input('Enter your search query:', placeholder='Type PMID / PMCID / Title')
