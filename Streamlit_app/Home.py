@@ -7,13 +7,14 @@ nltk.download('wordnet')
 nltk.download('omw-1.4')
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
-from wordcloud import WordCloud
+from wordcloud import WordCloud, STOPWORDS
 import matplotlib.pyplot as plt
 from gensim.models import LdaModel
 from gensim.corpora import Dictionary
 import streamlit as st
 import math
 import re
+from collections import Counter
 
 st.markdown("""
 <style>
@@ -64,12 +65,14 @@ def preprocess_text(text):
 
 # Function to generate the word cloud
 def generate_wordcloud(top_words_text):
-    wordcloud = WordCloud(width=800, height=400, background_color='black').generate(top_words_text)
+    wordcloud = WordCloud(width=800, height=400, background_color='black', prefer_horizontal=1.0,
+                          stopwords=set(STOPWORDS)).generate(top_words_text)
     #plt.figure(figsize=(10, 5))
     plt.imshow(wordcloud, interpolation='bilinear')
     #plt.title('Word Cloud')
     plt.axis("off")
     st.pyplot(plt)
+
 
 @st.cache_data
 # Function to load and preprocess the data
@@ -97,6 +100,13 @@ def main_page():
     # Load and preprocess data
     df = load_and_preprocess_data("ensemble_results.csv")
 
+    # Initialize a Counter to keep track of word frequencies
+    word_frequencies = Counter()
+
+    # Now you can access the frequency of each word
+    # for word, frequency in word_frequencies.items():
+    #     print(f"Word: {word}, Frequency: {frequency}")
+
     # Build the LDA model
     num_topics = 10
     lda_model = build_lda_model(df['Processed_Corpus'], num_topics=num_topics)
@@ -107,6 +117,17 @@ def main_page():
         topic_words = lda_model.show_topic(topic_num, topn=10)
         top_words = [word for word, _ in topic_words if len(word) > 3 and not word.endswith("ing") and not word.endswith("image")]
         top_words_text += ' '.join(top_words) + ' '
+
+    # Iterate through the original text (not tokens)
+    for text in df['Processed_Corpus']:
+        # Split the text into words
+        words = text.split()
+
+        # Iterate through words and count their occurrences
+        for word in words:
+            # Check if the word is in the top_words_text
+            if word in top_words_text:
+                word_frequencies[word] += 1
 
     # Create Streamlit app
     st.title('IBiDAV')          
